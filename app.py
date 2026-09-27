@@ -40,11 +40,10 @@ DAFTAR_LED = [
     "TCS 2 PHASE T FAIL", "PRI ETHERNET FAIL", "SEC ETHERNET FAIL", "SNTP FAILURE"
 ]
 
-with st.form("form_gangguan", clear_on_submit=True):
+with st.form("form_gangguan", clear_on_submit=False):
     st.subheader("📌 Informasi Umum")
     col0, col1, col2 = st.columns(3)
     with col0:
-        # Input Tanggal (Otomatis terisi tanggal hari ini)
         tanggal = st.date_input("Tanggal", value=datetime.now())
     with col1:
         jam = st.text_input("Jam (WIB)", value="", placeholder="Contoh: 20:35")
@@ -62,7 +61,6 @@ with st.form("form_gangguan", clear_on_submit=True):
 
     st.subheader("📋 Annunciator & Parameter Relay")
     
-    # Pilihan LED Annunciator via Multiselect (Bisa pilih lebih dari satu)
     led_terpilih = st.multiselect(
         "Pilih LED Annunciator yang Menyala / Active:",
         options=DAFTAR_LED,
@@ -122,7 +120,7 @@ with st.form("form_gangguan", clear_on_submit=True):
     with col_pmt_ses_r:
         pmt_ses_r = st.text_input("PMT R (Sesudah)", value="")
     with col_pmt_ses_s:
-        pmt_ses_t = st.text_input("PMT S (Sesudah)", value="")
+        pmt_ses_s = st.text_input("PMT S (Sesudah)", value="")
     with col_pmt_ses_t:
         pmt_ses_t = st.text_input("PMT T (Sesudah)", value="")
 
@@ -149,10 +147,8 @@ if submitted:
     kondisi_teks = "" if kondisi == "-- Pilih Kondisi --" else kondisi
     operator_teks = "" if operator == "-- Pilih Operator --" else operator
 
-    # Format tanggal ke format Indonesia DD-MM-YYYY
     tgl_formatted = tanggal.strftime("%d-%m-%Y")
 
-    # Format list LED terpilih menjadi format poin-poin bertingkat (-)
     if led_terpilih:
         annunciator_formatted = "\n".join([f"- {led}" for led in led_terpilih])
     else:
@@ -181,7 +177,7 @@ Counter LA sebelum : R={la_seb_r} | S={la_seb_s} | T={la_seb_t}
 Counter LA sesudah : R={la_ses_r} | S={la_ses_s} | T={la_ses_t}
 
 Counter PMT sebelum : R={pmt_seb_r} | S={pmt_seb_s} | T={pmt_seb_t}
-Counter PMT sesudah   : R={pmt_ses_r} | S={pmt_ses_s} | T={pmt_ses_t}
+Counter PMT sesudah   : R={pmt_ses_r} | S={pmt_ses_t if 'pmt_ses_t' in locals() else ''} | T={pmt_ses_t}
 
 Operator : {operator_teks.upper()}
 Upb : {upb.upper()}
