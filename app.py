@@ -3,15 +3,16 @@ import streamlit as st
 
 st.set_page_config(page_title="Form Laporan Gangguan PHT 150 kV", layout="centered")
 
-st.title("⚡ Form Pelaporan Gangguan Penghantar 150 kV")
+st.title("⚡ Form Pelaporan Gangguan Penghantar GI PANGURURAN 150 KV")
 st.markdown("Isi form di bawah ini untuk mengenerate format laporan otomatis.")
+st.markdown("PASTIKAN ANDA SUDAH FOTO RELAY DAN SHARE KE GROUP.")
 
 # Inisialisasi session state untuk menyimpan laporan
 if "teks_laporan" not in st.session_state:
     st.session_state.teks_laporan = ""
 
 with st.form("form_gangguan", clear_on_submit=True):
-    st.subheader("📌 Informasi Umum")
+    st.subheader("📌 Informasi Gangguan Penghantar")
     col1, col2 = st.columns(2)
     with col1:
         jam = st.text_input("Jam (WIB)", value="", placeholder="Contoh: 20:35")
