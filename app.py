@@ -46,7 +46,7 @@ DAFTAR_LED = [
 st.sidebar.title("📌 Menu Laporan")
 menu_pilihan = st.sidebar.radio(
     "Pilih Jenis Laporan:",
-    ["⚡ Laporan Gangguan PHT", "🔄 Laporan Manuver Tegangan"]
+    ["⚡ Laporan Gangguan PHT GI PANGURURAN", "🔄 Laporan Manuver GI PANGURURAN"]
 )
 
 # ==========================================
@@ -57,6 +57,7 @@ if menu_pilihan == "⚡ Laporan Gangguan PHT":
 
     with st.form("form_gangguan"):
         st.subheader("📌 Informasi Umum")
+        st.markdown("Pastikan RELAY SUDAH TERFOTO DAN TERKIRIM")
         col1, col2 = st.columns(2)
         with col1:
             jam = st.text_input("Jam (WIB)", placeholder="Contoh: 13:56")
