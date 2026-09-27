@@ -6,97 +6,116 @@ st.set_page_config(page_title="Form Laporan Gangguan PHT 150 kV", layout="center
 st.title("⚡ Form Pelaporan Gangguan Penghantar 150 kV")
 st.markdown("Isi form di bawah ini untuk mengenerate format laporan otomatis.")
 
-with st.form("form_gangguan"):
+# Inisialisasi session state untuk menyimpan laporan
+if "teks_laporan" not in st.session_state:
+    st.session_state.teks_laporan = ""
+
+with st.form("form_gangguan", clear_on_submit=True):
     st.subheader("📌 Informasi Umum")
     col1, col2 = st.columns(2)
     with col1:
-        jam = st.text_input("Jam (WIB)", value="20:35")
-        gi = st.text_input("Gardu Induk (GI)", value="Pangururan")
+        jam = st.text_input("Jam (WIB)", value="", placeholder="Contoh: 20:35")
+        gi = st.text_input("Gardu Induk (GI)", value="", placeholder="Contoh: Pangururan")
     with col2:
-        bay_pht = st.text_input("Bay Penghantar (PHT)", value="PGRAN - GTELE 2")
-        kondisi = st.selectbox("Kondisi", ["AR SUCCES", "TRIP / UNSUCCESS", "MANUAL TRIP"])
+        bay_pht = st.selectbox(
+            "Bay Penghantar (PHT)", 
+            [
+                "-- Pilih Bay PHT --",
+                "PGRUN - TELE #1",
+                "PGRUN - TELE #2"
+            ]
+        )
+        kondisi = st.selectbox("Kondisi", ["-- Pilih Kondisi --", "AR SUCCES", "TRIP / UNSUCCESS", "MANUAL TRIP"])
 
     st.subheader("📋 Annunciator & Parameter")
-    annunciator_default = (
-        "-Other\n- Phasa B\n- Neutral / Ground\n- Cb Close\n- Trip 3 Pole\n"
-        "- Manual Close\n- LED Gruop 2\n- Distance OP\n- ZONE 4 OP\n"
-        "- Aideo OP\n- Cr Sen Pott\n- Cr Send Dist\n- Ar In Progres\n- Ar Succes"
-    )
-    annunciator = st.text_area("Annunciator (Pisahkan per baris)", value=annunciator_default, height=150)
+    annunciator = st.text_area("Annunciator (Pisahkan per baris)", value="", placeholder="Contoh:\n- Phasa B\n- Neutral / Ground\n- Distance OP\n- ZONE 4 OP", height=150)
     
     col3, col4, col5 = st.columns(3)
     with col3:
-        zone = st.text_input("Zone", value="4")
+        zone = st.text_input("Zone", value="", placeholder="Contoh: 4")
     with col4:
-        jarak = st.text_input("Jarak (KM)", value="66.7")
+        jarak = st.text_input("Jarak (KM)", value="", placeholder="Contoh: 66.7")
     with col5:
-        cuaca = st.text_input("Cuaca", value="HUJAN PETIR")
+        cuaca = st.text_input("Cuaca", value="", placeholder="Contoh: HUJAN PETIR")
 
     st.subheader("⚡ Beban Sebelum Gangguan")
     col6, col7, col8, col9 = st.columns(4)
     with col6:
-        mw = st.text_input("MW", value="3.4")
+        mw = st.text_input("MW", value="")
     with col7:
-        mvar = st.text_input("MVar", value="0.3")
+        mvar = st.text_input("MVar", value="")
     with col8:
-        i_amp = st.text_input("I (A)", value="14")
+        i_amp = st.text_input("I (A)", value="")
     with col9:
-        e_kv = st.text_input("E (kV)", value="153")
+        e_kv = st.text_input("E (kV)", value="")
 
     st.subheader("🔢 Counter Meter LA (Lightning Arrester)")
     st.markdown("**Counter LA Sebelum**")
     col_la_seb_r, col_la_seb_s, col_la_seb_t = st.columns(3)
     with col_la_seb_r:
-        la_seb_r = st.text_input("R (Sebelum)", value="9")
+        la_seb_r = st.text_input("R (Sebelum)", value="")
     with col_la_seb_s:
-        la_seb_s = st.text_input("S (Sebelum)", value="8")
+        la_seb_s = st.text_input("S (Sebelum)", value="")
     with col_la_seb_t:
-        la_seb_t = st.text_input("T (Sebelum)", value="6")
+        la_seb_t = st.text_input("T (Sebelum)", value="")
 
     st.markdown("**Counter LA Sesudah**")
     col_la_ses_r, col_la_ses_s, col_la_ses_t = st.columns(3)
     with col_la_ses_r:
-        la_ses_r = st.text_input("R (Sesudah)", value="MENYUSUL")
+        la_ses_r = st.text_input("R (Sesudah)", value="")
     with col_la_ses_s:
-        la_ses_s = st.text_input("S (Sesudah)", value="MENYUSUL")
+        la_ses_s = st.text_input("S (Sesudah)", value="")
     with col_la_ses_t:
-        la_ses_t = st.text_input("T (Sesudah)", value="MENYUSUL")
+        la_ses_t = st.text_input("T (Sesudah)", value="")
 
     st.subheader("🔢 Counter Meter PMT (Pemutus Tenaga)")
     st.markdown("**Counter PMT Sebelum**")
     col_pmt_seb_r, col_pmt_seb_s, col_pmt_seb_t = st.columns(3)
     with col_pmt_seb_r:
-        pmt_seb_r = st.text_input("PMT R (Sebelum)", value="404")
+        pmt_seb_r = st.text_input("PMT R (Sebelum)", value="")
     with col_pmt_seb_s:
-        pmt_seb_s = st.text_input("PMT S (Sebelum)", value="397")
+        pmt_seb_s = st.text_input("PMT S (Sebelum)", value="")
     with col_pmt_seb_t:
-        pmt_seb_t = st.text_input("PMT T (Sebelum)", value="398")
+        pmt_seb_t = st.text_input("PMT T (Sebelum)", value="")
 
     st.markdown("**Counter PMT Sesudah**")
     col_pmt_ses_r, col_pmt_ses_s, col_pmt_ses_t = st.columns(3)
     with col_pmt_ses_r:
-        pmt_ses_r = st.text_input("PMT R (Sesudah)", value="MENYUSUL")
+        pmt_ses_r = st.text_input("PMT R (Sesudah)", value="")
     with col_pmt_ses_s:
-        pmt_ses_s = st.text_input("PMT S (Sesudah)", value="MENYUSUL")
+        pmt_ses_s = st.text_input("PMT S (Sesudah)", value="")
     with col_pmt_ses_t:
-        pmt_ses_t = st.text_input("PMT T (Sesudah)", value="MENYUSUL")
+        pmt_ses_t = st.text_input("PMT T (Sesudah)", value="")
 
     st.subheader("👤 Petugas")
     col12, col13 = st.columns(2)
     with col12:
-        operator = st.text_input("Operator", value="DANI LUMBAN RAJA")
+        operator = st.selectbox(
+            "Operator", 
+            [
+                "-- Pilih Operator --",
+                "DANI LUMBAN RAJA", 
+                "DARIMAN BOIMO SOLIN", 
+                "IMAM RIZKY SIREGAR", 
+                "LEO NAINGGOLAN"
+            ]
+        )
     with col13:
-        upb = st.text_input("UPB", value="SINAGA")
+        upb = st.text_input("UPB", value="")
 
     submitted = st.form_submit_button("Generate Format Laporan")
 
 if submitted:
-    teks_laporan = f"""*INFO Gangguan bay PHT {bay_pht.upper()}*
+    bay_pht_teks = "" if bay_pht == "-- Pilih Bay PHT --" else bay_pht
+    kondisi_teks = "" if kondisi == "-- Pilih Kondisi --" else kondisi
+    operator_teks = "" if operator == "-- Pilih Operator --" else operator
+
+    st.session_state.teks_laporan = f"""*INFO Gangguan bay PHT {bay_pht_teks.upper()}*
 
 _Jam_ :  *{jam}* _WIB_
 GI : *{gi}*
-Gangguan By PHT {bay_pht.upper()}: 
-Kondisi : {kondisi}
+Gangguan By PHT {bay_pht_teks.upper()}: 
+Kondisi : {kondisi_teks}
 Annunciator
 {annunciator}
 Zone : {zone}
@@ -115,18 +134,17 @@ Counter LA sesudah : R={la_ses_r} | S={la_ses_s} | T={la_ses_t}
 Counter PMT sebelum : R={pmt_seb_r} | S={pmt_seb_s} | T={pmt_seb_t}
 Counter PMT sesudah   : R={pmt_ses_r} | S={pmt_ses_s} | T={pmt_ses_t}
 
-Operator : {operator.upper()}
+Operator : {operator_teks.upper()}
 Upb : {upb.upper()}
 
 _Terimakasih_"""
 
+if st.session_state.teks_laporan:
     st.success("Laporan Berhasil Dibuat!")
     
-    # 1. Menampilkan Teks Hasil untuk Di-copy
-    st.code(teks_laporan, language="markdown")
+    st.code(st.session_state.teks_laporan, language="markdown")
 
-    # 2. Tombol Kirim ke WhatsApp
-    teks_encoded = urllib.parse.quote(teks_laporan)
+    teks_encoded = urllib.parse.quote(st.session_state.teks_laporan)
     url_wa = f"https://api.whatsapp.com/send?text={teks_encoded}"
 
     st.markdown(
