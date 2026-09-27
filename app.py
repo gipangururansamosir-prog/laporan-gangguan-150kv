@@ -3,16 +3,44 @@ import streamlit as st
 
 st.set_page_config(page_title="Form Laporan Gangguan PHT 150 kV", layout="centered")
 
-st.title("⚡ Form Pelaporan Gangguan Penghantar GI PANGURURAN 150 KV")
+st.title("⚡ Form Pelaporan Gangguan Penghantar GI PANGURURAN 150 kV")
 st.markdown("Isi form di bawah ini untuk mengenerate format laporan otomatis.")
-st.markdown("PASTIKAN ANDA SUDAH FOTO RELAY DAN SHARE KE GROUP.")
+st.markdown("PASTIKAN ANDA SUDAH FOTO RELAY TERLEBIH DAHULU")
 
 # Inisialisasi session state untuk menyimpan laporan
 if "teks_laporan" not in st.session_state:
     st.session_state.teks_laporan = ""
 
+# Daftar indikasi LED Annunciator dari Relay Distance GE D60
+DAFTAR_LED = [
+    # STATUS
+    "IN SERVICE", "TROUBLE", "TEST MODE", "TRIP", "ALARM", "PICKUP", 
+    "VOLTAGE", "CURRENT", "FREQUENCY", "OTHER", 
+    "PHASE A", "PHASE B", "PHASE C", "NEUTRAL / GROUND",
+    
+    # GROUP 1
+    "CB CLOSE", "CB PHASE R OPEN", "CB PHASE S OPEN", "CB PHASE T OPEN", 
+    "POTT ECHO ON", "POWER SWING BLOCK", "LINE PICKUP OP", 
+    "TRIP 1-POLE", "TRIP 3-POLE", "BREAKER FAIL", "MANUAL CLOSE",
+    
+    # GROUP 2
+    "DISTANCE OP", "ZONE 1 OP", "ZONE 2 OP", "ZONE 3 OP", "ZONE 4 OP", 
+    "PUTT OP", "AIDED DEF OP", "CR SEND POTT ECHO", "CR SEND DIST", 
+    "CR RECV DIST/POTT", "PLC ALARM/TROUBLE", "AR BLOCK",
+    
+    # GROUP 3
+    "AR ENABLED", "AR DISABLED", "CB AR LOCKOUT", "AR LOCKOUT", 
+    "AR IN PROGRESS", "AR SUCCESS", "SYNCRON ON", "CR SEND DEF", 
+    "CR RECV DEF", "VT LINE FAIL", "VT BUS FAIL", "AR NOT READY",
+    
+    # GROUP 4
+    "BACKUP PROT FAIL", "TCS 1 PHASE R FAIL", "TCS 1 PHASE S FAIL", 
+    "TCS 1 PHASE T FAIL", "TCS 2 PHASE R FAIL", "TCS 2 PHASE S FAIL", 
+    "TCS 2 PHASE T FAIL", "PRI ETHERNET FAIL", "SEC ETHERNET FAIL", "SNTP FAILURE"
+]
+
 with st.form("form_gangguan", clear_on_submit=True):
-    st.subheader("📌 Informasi Gangguan Penghantar")
+    st.subheader("📌 Informasi Umum")
     col1, col2 = st.columns(2)
     with col1:
         jam = st.text_input("Jam (WIB)", value="", placeholder="Contoh: 20:35")
@@ -28,8 +56,14 @@ with st.form("form_gangguan", clear_on_submit=True):
         )
         kondisi = st.selectbox("Kondisi", ["-- Pilih Kondisi --", "AR SUCCES", "TRIP / UNSUCCESS", "MANUAL TRIP"])
 
-    st.subheader("📋 Annunciator & Parameter")
-    annunciator = st.text_area("Annunciator (Pisahkan per baris)", value="", placeholder="Contoh:\n- Phasa B\n- Neutral / Ground\n- Distance OP\n- ZONE 4 OP", height=150)
+    st.subheader("📋 Annunciator & Parameter Relay")
+    
+    # Pilihan LED Annunciator via Multiselect (Bisa pilih lebih dari satu)
+    led_terpilih = st.multiselect(
+        "Pilih LED Annunciator yang Menyala / Active:",
+        options=DAFTAR_LED,
+        placeholder="Ketik atau pilih LED yang menyala..."
+    )
     
     col3, col4, col5 = st.columns(3)
     with col3:
@@ -111,6 +145,12 @@ if submitted:
     kondisi_teks = "" if kondisi == "-- Pilih Kondisi --" else kondisi
     operator_teks = "" if operator == "-- Pilih Operator --" else operator
 
+    # Format list LED terpilih menjadi format poin-poin bertingkat (-)
+    if led_terpilih:
+        annunciator_formatted = "\n".join([f"- {led}" for led in led_terpilih])
+    else:
+        annunciator_formatted = "-"
+
     st.session_state.teks_laporan = f"""*INFO Gangguan bay PHT {bay_pht_teks.upper()}*
 
 _Jam_ :  *{jam}* _WIB_
@@ -118,7 +158,7 @@ GI : *{gi}*
 Gangguan By PHT {bay_pht_teks.upper()}: 
 Kondisi : {kondisi_teks}
 Annunciator
-{annunciator}
+{annunciator_formatted}
 Zone : {zone}
 Jarak : {jarak} KM
 Cuaca = {cuaca.upper()}
