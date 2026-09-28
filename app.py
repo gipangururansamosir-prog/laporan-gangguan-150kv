@@ -150,9 +150,9 @@ if submitted:
     tgl_formatted = tanggal.strftime("%d-%m-%Y")
 
     if led_terpilih:
-        annunciator_formatted = "\n".join([f"- {led}" for led in led_terpilih])
+        distance_formatted = "\n".join([f"- {led}" for led in led_terpilih])
     else:
-        annunciator_formatted = "-"
+        distance_formatted = "-"
 
     st.session_state.teks_laporan = f"""*INFO Gangguan bay PHT {bay_pht_teks.upper()}*
 
@@ -161,8 +161,8 @@ _Jam_ :  *{jam}* _WIB_
 GI : *{gi}*
 Gangguan By PHT {bay_pht_teks.upper()}: 
 Kondisi : {kondisi_teks}
-Annunciator
-{annunciator_formatted}
+Distance
+{distance_formatted}
 Zone : {zone}
 Jarak : {jarak} KM
 Cuaca = {cuaca.upper()}
