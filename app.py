@@ -59,10 +59,10 @@ with st.form("form_gangguan", clear_on_submit=False):
         )
         kondisi = st.selectbox("Kondisi", ["-- Pilih Kondisi --", "AR SUCCES", "TRIP / UNSUCCESS", "MANUAL TRIP"])
 
-    st.subheader("📋 Annunciator & Parameter Relay")
+    st.subheader("📋 Relay Distance & Parameter Relay")
     
     led_terpilih = st.multiselect(
-        "Pilih LED Annunciator yang Menyala / Active:",
+        "Pilih LED Distance yang Menyala / Active:",
         options=DAFTAR_LED,
         placeholder="Ketik atau pilih LED yang menyala..."
     )
